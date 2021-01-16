@@ -7,7 +7,7 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    val oneMilliSecondInNanoSeconds = 1000000
+    private val oneMilliSecondInNanoSeconds = 1000000
 
     private fun benchmark(numRepetitions: Int, fn: () -> Unit): Long {
         val timeStart = System.nanoTime()
@@ -17,9 +17,9 @@ class MainActivity : AppCompatActivity() {
         return System.nanoTime() - timeStart
     }
 
-    fun runConvolution() {
-        val signalLength = 1000
-        val numRepetitions = 1000
+    private fun runConvolution() {
+        val signalLength = 100000
+        val numRepetitions = 100
 
         val signal = List(signalLength) { Random.nextFloat() }
 
