@@ -37,11 +37,11 @@ Java_com_freeflowgfx_convolution_Cpp_convolution(
     for (int i = 0; i < signalLength; i++) {
         result[i] = 0;
         for (int j = 0; j < filterLength; j++) {
-            int signal_index = i + j - filterLength / 2 -1;
+            int signal_index = i + j - filterLength / 2;
 
             if (signal_index < 0 || signal_index >= signalLength) continue;
 
-            result[i] += csignal[signal_index] * cfilter[filterLength - j];
+            result[i] += csignal[signal_index] * cfilter[filterLength - j -1];
         }
     }
 

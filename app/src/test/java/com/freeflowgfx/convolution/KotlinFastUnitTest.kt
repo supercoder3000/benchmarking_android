@@ -24,7 +24,7 @@ class KotlinFastUnitTest {
         }
 
         expected.forEachIndexed { index, it ->
-            assertTrue("Found $res (expected $expected)") {
+            assertTrue("Found ${res.toList()}\n(expected $expected)") {
                 it == res[index]
             }
         }
@@ -54,7 +54,7 @@ class KotlinFastUnitTest {
         }
 
         expected.forEachIndexed { index, it ->
-            assertTrue("Found $res\n (expected $expected)") {
+            assertTrue("Found ${res.toList()}\n (expected $expected)") {
                 it == res[index]
             }
         }

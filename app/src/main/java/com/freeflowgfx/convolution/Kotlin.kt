@@ -21,9 +21,10 @@ class Kotlin {
         for (i in signal.indices) {
             result[i] = 0f
             for (j in filter.indices) {
-                val signalIndex: Int = i + j - filter.size / 2 - 1
-                if (signalIndex < 0 || signalIndex >= signal.size) continue
-                result[i] += signal[signalIndex] * filter[filter.size - j]
+                val signalIndex: Int = i + j - filter.size / 2
+                if (signalIndex >= 0 && signalIndex < signal.size) {
+                    result[i] += signal[signalIndex] * filter[filter.size - j - 1]
+                }
             }
         }
 
