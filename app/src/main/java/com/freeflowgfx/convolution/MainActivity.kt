@@ -26,21 +26,36 @@ class MainActivity : AppCompatActivity() {
         val cppFunctions = Cpp()
         val kotlinFunctions = Kotlin()
 
-        val timeKotlin = benchmark(numRepetitions) { kotlinFunctions.convolution(signal, filter) }
-        val timeCpp = benchmark(numRepetitions) {
-            cppFunctions.convolution(
-                signal.toFloatArray(),
-                filter.toFloatArray()
+        val timeKotlin = benchmark(numRepetitions) {
+            kotlinFunctions.convolution(
+                signal = signal,
+                filter = filter
             )
         }
 
-        val kotlinText = "Kotlin code took ${timeKotlin / oneMilliSecondInNanoSeconds}ms " +
-            "for $numRepetitions iterations"
-        val cppText = "C++ code took ${timeCpp / oneMilliSecondInNanoSeconds}ms " +
-            "for $numRepetitions iterations"
+        val timeCpp = benchmark(numRepetitions) {
+            cppFunctions.convolution(
+                signal = signal.toFloatArray(),
+                filter = filter.toFloatArray()
+            )
+        }
+
+        val timeKotlinFast = benchmark(numRepetitions) {
+            kotlinFunctions.convolutionFast(
+                signal = signal.toFloatArray(),
+                filter = filter.toFloatArray()
+            )
+        }
+
+        val infoTextView = findViewById<TextView>(R.id.timeKotlin)
+        infoTextView.text = "Convolution Benchmark: $numRepetitions iterations"
+
+        val kotlinText = "Kotlin code took ${timeKotlin / oneMilliSecondInNanoSeconds}ms"
+        val kotlinFast = "Kotlin (fast) code took ${timeKotlinFast / oneMilliSecondInNanoSeconds}ms"
+        val cppText = "C++ code took ${timeCpp / oneMilliSecondInNanoSeconds}ms"
 
         val cppTextView = findViewById<TextView>(R.id.timeCpp)
-        cppTextView.text = "$kotlinText\n$cppText"
+        cppTextView.text = "$kotlinText\n$kotlinFast\n$cppText"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
