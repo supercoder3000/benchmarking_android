@@ -3,10 +3,9 @@ package com.freeflowgfx.convolution
 import org.junit.Test
 import kotlin.test.assertTrue
 
-
-class ConvolutionUnitTest {
+class KotlinUnitTest {
     @Test
-    fun convolutionKotlin1() {
+    fun dirac() {
         val kotlinFunctions = Kotlin()
 
         val signal = MutableList(1000) { 0f }
@@ -18,7 +17,7 @@ class ConvolutionUnitTest {
         )
 
         val expected = filter.takeLast(filter.size / 2 + 1) +
-                List(signal.size - filter.size / 2 - 1) { 0f }
+            List(signal.size - filter.size / 2 - 1) { 0f }
 
         assertTrue("Length are not equal.") {
             res.size == expected.size
@@ -32,7 +31,7 @@ class ConvolutionUnitTest {
     }
 
     @Test
-    fun convolutionKotlin2() {
+    fun doubleDirac() {
         val kotlinFunctions = Kotlin()
 
         val signal = MutableList(1000) { 0f }
@@ -45,7 +44,7 @@ class ConvolutionUnitTest {
         )
 
         val expectedTmp = filter.takeLast(filter.size / 2 + 1) +
-                List(signal.size - filter.size / 2 - 1) { 0f }
+            List(signal.size - filter.size / 2 - 1) { 0f }
         val expected = expectedTmp.zip(listOf(expectedTmp[1]) + expectedTmp.dropLast(1)).map {
             it.first + it.second
         }

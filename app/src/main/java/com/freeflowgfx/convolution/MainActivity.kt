@@ -9,7 +9,6 @@ class MainActivity : AppCompatActivity() {
 
     val oneMilliSecondInNanoSeconds = 1000000
 
-
     private fun benchmark(numRepetitions: Int, fn: () -> Unit): Long {
         val timeStart = System.nanoTime()
         for (ii in 0 until numRepetitions) {
@@ -28,18 +27,23 @@ class MainActivity : AppCompatActivity() {
         val kotlinFunctions = Kotlin()
 
         val timeKotlin = benchmark(numRepetitions) { kotlinFunctions.convolution(signal, filter) }
-        val timeCpp = benchmark(numRepetitions) { cppFunctions.convolution(signal.toFloatArray(), filter.toFloatArray()) }
+        val timeCpp = benchmark(numRepetitions) {
+            cppFunctions.convolution(
+                signal.toFloatArray(),
+                filter.toFloatArray()
+            )
+        }
 
-        val kotlinTextView = findViewById<TextView>(R.id.timeKotlin)
-        kotlinTextView.text =
-            "Kotlin code took ${timeKotlin / oneMilliSecondInNanoSeconds}ms for $numRepetitions iterations"
+        val kotlinText = "Kotlin code took ${timeKotlin / oneMilliSecondInNanoSeconds}ms " +
+            "for $numRepetitions iterations"
+        val cppText = "C++ code took ${timeCpp / oneMilliSecondInNanoSeconds}ms " +
+            "for $numRepetitions iterations"
 
         val cppTextView = findViewById<TextView>(R.id.timeCpp)
-        cppTextView.text =
-            "C++ code took ${timeCpp / oneMilliSecondInNanoSeconds}ms for $numRepetitions iterations"
+        cppTextView.text = "$kotlinText\n$cppText"
     }
 
-     override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

@@ -32,15 +32,16 @@ Java_com_freeflowgfx_convolution_Cpp_convolution(
     jfloat *csignal = env->GetFloatArrayElements(signal, JNI_FALSE);
     jfloat *cfilter = env->GetFloatArrayElements(filter, JNI_FALSE);
 
-    jfloat result[signalLength];
+    jfloat result[signalLength]; // init with 0?
 
     for (int i = 0; i < signalLength; i++) {
+        result[i] = 0;
         for (int j = 0; j < filterLength; j++) {
-            int signal_index = i - filterLength / 2;
+            int signal_index = i + j - filterLength / 2 -1;
 
             if (signal_index < 0 || signal_index >= signalLength) continue;
 
-            result[i] = csignal[signal_index] * cfilter[filterLength - j];
+            result[i] += csignal[signal_index] * cfilter[filterLength - j];
         }
     }
 
@@ -48,5 +49,5 @@ Java_com_freeflowgfx_convolution_Cpp_convolution(
     env->ReleaseFloatArrayElements(filter, cfilter, 0);
     env->SetFloatArrayRegion(resultArray, 0, signalLength, result);
 
-    return signal;
+    return resultArray;
 }
