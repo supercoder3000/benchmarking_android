@@ -9,6 +9,7 @@ class MainActivity : AppCompatActivity() {
 
     val oneMilliSecondInNanoSeconds = 1000000
 
+
     private fun benchmark(numRepetitions: Int, fn: () -> Unit): Long {
         val timeStart = System.nanoTime()
         for (ii in 0 until numRepetitions) {
@@ -19,14 +20,15 @@ class MainActivity : AppCompatActivity() {
 
     fun runConvolution() {
         val signalLength = 1000
-        val numRepetitions = 100
+        val numRepetitions = 1000
 
         val signal = List(signalLength) { Random.nextFloat() }
 
         val cppFunctions = Cpp()
+        val kotlinFunctions = Kotlin()
 
-        val timeKotlin = benchmark(numRepetitions) { kotlinConvolution(signal) }
-        val timeCpp = benchmark(numRepetitions) { cppFunctions.convolution(0, 1) }
+        val timeKotlin = benchmark(numRepetitions) { kotlinFunctions.convolution(signal, filter) }
+        val timeCpp = benchmark(numRepetitions) { cppFunctions.convolution(signal.toFloatArray(), filter.toFloatArray()) }
 
         val kotlinTextView = findViewById<TextView>(R.id.timeKotlin)
         kotlinTextView.text =
@@ -37,25 +39,7 @@ class MainActivity : AppCompatActivity() {
             "C++ code took ${timeCpp / oneMilliSecondInNanoSeconds}ms for $numRepetitions iterations"
     }
 
-    private fun kotlinConvolution(signal: List<Float>): List<Float> {
-        val filter = listOf(
-            0.08f, 0.102514f, 0.16785218f, 0.26961878f, 0.39785218f,
-            0.54f, 0.68214782f, 0.81038122f, 0.91214782f, 0.977486f,
-            1.0f, 0.977486f, 0.91214782f, 0.81038122f, 0.68214782f,
-            0.54f, 0.39785218f, 0.26961878f, 0.16785218f, 0.102514f,
-            0.08f
-        )
-
-        val filterReversed = filter.reversed()
-
-        return signal.windowed(filter.size) {
-            it.zip(filterReversed).map {
-                it.first * it.second
-            }.sum()
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
