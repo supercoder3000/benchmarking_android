@@ -1,14 +1,13 @@
 package com.freeflowgfx.convolution
 
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    val OneMilliSecondInNanoSeconds = 1000000
+    val oneMilliSecondInNanoSeconds = 1000000
 
     fun runConvolution() {
         val signalLength = 1000
@@ -23,21 +22,26 @@ class MainActivity : AppCompatActivity() {
         val timeEnd = System.nanoTime()
 
         val kotlinEdit = findViewById<TextView>(R.id.timeKotlin)
-        kotlinEdit.text = "Kotlin code took ${(timeEnd - timeStart) / OneMilliSecondInNanoSeconds}ms for $numRepetitions iterations"
+        kotlinEdit.text =
+            "Kotlin code took ${(timeEnd - timeStart) / oneMilliSecondInNanoSeconds}ms for $numRepetitions iterations"
     }
 
-    private fun computeConvolution(signal: List<Float>) : List<Float> {
-        val filter = listOf(0.08f, 0.102514f, 0.16785218f, 0.26961878f, 0.39785218f,
+    private fun computeConvolution(signal: List<Float>): List<Float> {
+        val filter = listOf(
+            0.08f, 0.102514f, 0.16785218f, 0.26961878f, 0.39785218f,
             0.54f, 0.68214782f, 0.81038122f, 0.91214782f, 0.977486f,
             1.0f, 0.977486f, 0.91214782f, 0.81038122f, 0.68214782f,
             0.54f, 0.39785218f, 0.26961878f, 0.16785218f, 0.102514f,
-            0.08f)
+            0.08f
+        )
 
         val filterReversed = filter.reversed()
 
-        return signal.windowed(filter.size) { it.zip(filterReversed).map {
-            it.first * it.second
-        }.sum() }
+        return signal.windowed(filter.size) {
+            it.zip(filterReversed).map {
+                it.first * it.second
+            }.sum()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
