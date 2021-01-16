@@ -9,24 +9,35 @@ class MainActivity : AppCompatActivity() {
 
     val oneMilliSecondInNanoSeconds = 1000000
 
+    private fun benchmark(numRepetitions: Int, fn: () -> Unit): Long {
+        val timeStart = System.nanoTime()
+        for (ii in 0 until numRepetitions) {
+            fn()
+        }
+        return System.nanoTime() - timeStart
+    }
+
     fun runConvolution() {
         val signalLength = 1000
         val numRepetitions = 100
 
         val signal = List(signalLength) { Random.nextFloat() }
 
-        val timeStart = System.nanoTime()
-        for (ii in 0 until numRepetitions) {
-            computeConvolution(signal)
-        }
-        val timeEnd = System.nanoTime()
+        val cppFunctions = Cpp()
 
-        val kotlinEdit = findViewById<TextView>(R.id.timeKotlin)
-        kotlinEdit.text =
-            "Kotlin code took ${(timeEnd - timeStart) / oneMilliSecondInNanoSeconds}ms for $numRepetitions iterations"
+        val timeKotlin = benchmark(numRepetitions) { kotlinConvolution(signal) }
+        val timeCpp = benchmark(numRepetitions) { cppFunctions.convolution(0, 1) }
+
+        val kotlinTextView = findViewById<TextView>(R.id.timeKotlin)
+        kotlinTextView.text =
+            "Kotlin code took ${timeKotlin / oneMilliSecondInNanoSeconds}ms for $numRepetitions iterations"
+
+        val cppTextView = findViewById<TextView>(R.id.timeCpp)
+        cppTextView.text =
+            "C++ code took ${timeCpp / oneMilliSecondInNanoSeconds}ms for $numRepetitions iterations"
     }
 
-    private fun computeConvolution(signal: List<Float>): List<Float> {
+    private fun kotlinConvolution(signal: List<Float>): List<Float> {
         val filter = listOf(
             0.08f, 0.102514f, 0.16785218f, 0.26961878f, 0.39785218f,
             0.54f, 0.68214782f, 0.81038122f, 0.91214782f, 0.977486f,
