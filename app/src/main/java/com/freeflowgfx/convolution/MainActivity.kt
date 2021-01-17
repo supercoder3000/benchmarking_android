@@ -15,8 +15,8 @@ class MainActivity : AppCompatActivity() {
     private val oneMilliSecondInNanoSeconds = 1000000
 
     private fun runConvolution() {
-        val signalLength = 1000000
-        val numRepetitions = 100
+        val signalLength = 10000
+        val numRepetitions = 50
 
         val signal = List(signalLength) { Random.nextFloat() }.toFloatArray()
 
