@@ -43,9 +43,11 @@ class KotlinFastUnitTest {
             filter = filter.toFloatArray()
         )
 
-        val expectedTmp = filter.takeLast(filter.size / 2 + 1) +
+        val expectedPeak0 = filter.takeLast(filter.size / 2 + 1) +
             List(signal.size - filter.size / 2 - 1) { 0f }
-        val expected = expectedTmp.zip(listOf(expectedTmp[1]) + expectedTmp.dropLast(1)).map {
+        val expectedPeak1 = filter.takeLast(filter.size / 2 + 2) +
+                List(signal.size - filter.size / 2 - 2) { 0f }
+        val expected = expectedPeak0.zip(expectedPeak1).map {
             it.first + it.second
         }
 
