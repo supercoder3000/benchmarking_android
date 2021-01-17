@@ -9,5 +9,7 @@ val filterShort = listOf(
 )
 
 val filter =
-    filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort +
-        filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort
+    (
+        filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort +
+            filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort + filterShort
+        ).toFloatArray()

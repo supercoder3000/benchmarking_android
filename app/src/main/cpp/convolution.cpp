@@ -5,15 +5,9 @@
 #include <string>
 
 
-//void convolution(const float &signal, const float &filter) {
-//
-//}
-
-
-
 extern "C"
 JNIEXPORT jfloatArray JNICALL
-Java_com_freeflowgfx_convolution_Cpp_convolution(
+Java_com_freeflowgfx_convolution_implementation_Cpp_convolution(
         JNIEnv *env,
         jobject obj,
         jfloatArray signal,

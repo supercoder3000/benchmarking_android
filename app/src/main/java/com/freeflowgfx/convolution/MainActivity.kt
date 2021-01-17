@@ -3,59 +3,44 @@ package com.freeflowgfx.convolution
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.freeflowgfx.convolution.benchmark.benchmark
+import com.freeflowgfx.convolution.implementation.Cpp
+import com.freeflowgfx.convolution.implementation.FunctionsUnderTest
+import com.freeflowgfx.convolution.implementation.Kotlin
+import com.freeflowgfx.convolution.implementation.KotlinFast
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
     private val oneMilliSecondInNanoSeconds = 1000000
 
-    private fun benchmark(numRepetitions: Int, fn: () -> Unit): Long {
-        val timeStart = System.nanoTime()
-        for (ii in 0 until numRepetitions) {
-            fn()
-        }
-        return System.nanoTime() - timeStart
-    }
-
     private fun runConvolution() {
-        val signalLength = 100000
+        val signalLength = 1000000
         val numRepetitions = 100
 
-        val signal = List(signalLength) { Random.nextFloat() }
+        val signal = List(signalLength) { Random.nextFloat() }.toFloatArray()
 
-        val cppFunctions = Cpp()
-        val kotlinFunctions = Kotlin()
+        val implementationsUnderTest: List<FunctionsUnderTest> = listOf(
+            Cpp(),
+            Kotlin(),
+            KotlinFast()
+        )
 
-        val timeKotlin = benchmark(numRepetitions) {
-            kotlinFunctions.convolution(
-                signal = signal,
-                filter = filter
-            )
+        val testResults = implementationsUnderTest.map {
+            val duration = benchmark(numRepetitions) {
+                it.convolution(
+                    signal = signal,
+                    filter = filter
+                )
+            }
+            "${it.implementationType} code took ${duration / oneMilliSecondInNanoSeconds}ms"
         }
 
-        val timeCpp = benchmark(numRepetitions) {
-            cppFunctions.convolution(
-                signal = signal.toFloatArray(),
-                filter = filter.toFloatArray()
-            )
-        }
-
-        val timeKotlinFast = benchmark(numRepetitions) {
-            kotlinFunctions.convolutionFast(
-                signal = signal.toFloatArray(),
-                filter = filter.toFloatArray()
-            )
-        }
-
-        val infoTextView = findViewById<TextView>(R.id.timeKotlin)
+        val infoTextView = findViewById<TextView>(R.id.infoText)
         infoTextView.text = "Convolution Benchmark: $numRepetitions iterations"
 
-        val kotlinText = "Kotlin code took ${timeKotlin / oneMilliSecondInNanoSeconds}ms"
-        val kotlinFast = "Kotlin (fast) code took ${timeKotlinFast / oneMilliSecondInNanoSeconds}ms"
-        val cppText = "C++ code took ${timeCpp / oneMilliSecondInNanoSeconds}ms"
-
-        val cppTextView = findViewById<TextView>(R.id.timeCpp)
-        cppTextView.text = "$kotlinText\n$kotlinFast\n$cppText"
+        val benchmarkResultsTextView = findViewById<TextView>(R.id.benchmarkResults)
+        benchmarkResultsTextView.text = testResults.joinToString("\n")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
