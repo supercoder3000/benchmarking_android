@@ -3,8 +3,6 @@ package com.freeflowgfx.convolution
 import com.freeflowgfx.convolution.implementation.FunctionsUnderTest
 import org.hamcrest.MatcherAssert.assertThat
 
-// import kotlin.test.assertTrue
-
 abstract class CommonTest {
 
     abstract val implementation: FunctionsUnderTest
