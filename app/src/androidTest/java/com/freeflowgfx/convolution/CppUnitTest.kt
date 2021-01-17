@@ -18,4 +18,3 @@ class CppUnitTest : CommonTest() {
         super.testDoubleDirac()
     }
 }
-
