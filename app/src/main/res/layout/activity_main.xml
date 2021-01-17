@@ -7,13 +7,25 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/timeKotlin"
+        android:id="@+id/infoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:text="Time Kotlin"
+        app:layout_constraintBottom_toTopOf="@+id/benchmarkResults"
+        app:layout_constraintEnd_toEndOf="@+id/benchmarkResults"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/benchmarkResults"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/benchmarkResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time CPP"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infoText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

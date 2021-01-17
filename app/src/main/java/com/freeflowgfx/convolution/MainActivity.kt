@@ -3,45 +3,44 @@ package com.freeflowgfx.convolution
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.freeflowgfx.convolution.benchmark.benchmark
+import com.freeflowgfx.convolution.implementation.Cpp
+import com.freeflowgfx.convolution.implementation.FunctionsUnderTest
+import com.freeflowgfx.convolution.implementation.Kotlin
+import com.freeflowgfx.convolution.implementation.KotlinFast
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    val oneMilliSecondInNanoSeconds = 1000000
+    private val oneMilliSecondInNanoSeconds = 1000000
 
-    fun runConvolution() {
-        val signalLength = 1000
-        val numRepetitions = 100
+    private fun runConvolution() {
+        val signalLength = 10000
+        val numRepetitions = 50
 
-        val signal = List(signalLength) { Random.nextFloat() }
+        val signal = List(signalLength) { Random.nextFloat() }.toFloatArray()
 
-        val timeStart = System.nanoTime()
-        for (ii in 0 until numRepetitions) {
-            computeConvolution(signal)
-        }
-        val timeEnd = System.nanoTime()
-
-        val kotlinEdit = findViewById<TextView>(R.id.timeKotlin)
-        kotlinEdit.text =
-            "Kotlin code took ${(timeEnd - timeStart) / oneMilliSecondInNanoSeconds}ms for $numRepetitions iterations"
-    }
-
-    private fun computeConvolution(signal: List<Float>): List<Float> {
-        val filter = listOf(
-            0.08f, 0.102514f, 0.16785218f, 0.26961878f, 0.39785218f,
-            0.54f, 0.68214782f, 0.81038122f, 0.91214782f, 0.977486f,
-            1.0f, 0.977486f, 0.91214782f, 0.81038122f, 0.68214782f,
-            0.54f, 0.39785218f, 0.26961878f, 0.16785218f, 0.102514f,
-            0.08f
+        val implementationsUnderTest: List<FunctionsUnderTest> = listOf(
+            Cpp(),
+            Kotlin(),
+            KotlinFast()
         )
 
-        val filterReversed = filter.reversed()
-
-        return signal.windowed(filter.size) {
-            it.zip(filterReversed).map {
-                it.first * it.second
-            }.sum()
+        val testResults = implementationsUnderTest.map {
+            val duration = benchmark(numRepetitions) {
+                it.convolution(
+                    signal = signal,
+                    filter = filter
+                )
+            }
+            "${it.implementationType} code took ${duration / oneMilliSecondInNanoSeconds}ms"
         }
+
+        val infoTextView = findViewById<TextView>(R.id.infoText)
+        infoTextView.text = "Convolution Benchmark: $numRepetitions iterations"
+
+        val benchmarkResultsTextView = findViewById<TextView>(R.id.benchmarkResults)
+        benchmarkResultsTextView.text = testResults.joinToString("\n")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
