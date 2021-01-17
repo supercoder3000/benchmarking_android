@@ -32,16 +32,19 @@ Java_com_freeflowgfx_convolution_Cpp_convolution(
     jfloat *csignal = env->GetFloatArrayElements(signal, JNI_FALSE);
     jfloat *cfilter = env->GetFloatArrayElements(filter, JNI_FALSE);
 
-    jfloat result[signalLength];
+    jfloat signal_resized[signalLength + filterLength];
+    for (int i = 0; i < signalLength + filterLength; i++) {
+        signal_resized[i] = 0;
+    }
+    for (int i = 0; i < signalLength; i++) {
+        signal_resized[i + filterLength / 2] = csignal[i];
+    }
 
+    jfloat result[signalLength];
     for (int i = 0; i < signalLength; i++) {
         result[i] = 0;
         for (int j = 0; j < filterLength; j++) {
-            int signal_index = i + j - filterLength / 2;
-
-            if (signal_index < 0 || signal_index >= signalLength) continue;
-
-            result[i] += csignal[signal_index] * cfilter[filterLength - j -1];
+            result[i] += signal_resized[i + j] * cfilter[filterLength - j - 1];
         }
     }
 
