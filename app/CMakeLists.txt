@@ -9,7 +9,9 @@ cmake_minimum_required(VERSION 3.6.0)
 find_library(log-lib
         log)
 
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -O3")
+
 add_library(Convolution SHARED
         src/main/cpp/convolution.cpp)
 
